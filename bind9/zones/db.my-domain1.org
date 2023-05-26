@@ -1,0 +1,16 @@
+$TTL    60
+@       IN      SOA     ns1.my-domain1.org. root.my-domain1.org. (
+                  7     ; Serial
+             604800     ; Refresh
+              86400     ; Retry
+            2419200     ; Expire
+             604800 )   ; Negative Cache TTL
+;
+; name servers - NS records
+     IN      NS      ns1.my-domain1.org.
+
+; name servers - A records
+ns1.my-domain1.org.        IN      A           172.20.0.2
+
+machine1.my-domain1.org.    IN      A           172.20.0.3
+machine3.my-domain1.org.       IN      A           172.20.0.5

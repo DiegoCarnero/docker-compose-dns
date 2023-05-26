@@ -1,0 +1,8 @@
+zone "my-domain1.org" {
+    type master;
+    file "/etc/bind/zones/db.my-domain1.org";
+};
+zone "my-domain2.org"{
+    type master;
+    file "/etc/bind/zones/db.my-domain2.org";
+};

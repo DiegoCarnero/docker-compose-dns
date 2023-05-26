@@ -1,0 +1,79 @@
+services:
+  bind9:
+    build: ./bind9
+    image: bind9
+    container_name: dns-server
+    volumes:
+      - ./bind9/hosts:/etc/hosts
+      - ./bind9/named.conf.options:/etc/bind/named.conf.options
+      - ./bind9/named.conf.local:/etc/bind/named.conf.local
+      - ./bind9/zones:/etc/bind/zones/
+      - ./bind9/entrypoint.sh:/entrypoint.sh
+    entrypoint:
+    - bash
+    - entrypoint.sh
+    networks:
+      my-net-one:
+        ipv4_address: 172.20.0.2
+      my-net-two:
+        ipv4_address: 173.20.0.2
+
+  host1:
+    build: ./hostmachine
+    image: hostmachine:latest
+    container_name: host1
+    command: tail -F anything
+    hostname: host_1
+    volumes:
+       - ./hostmachine/resolv.conf:/etc/resolv.conf
+    dns:
+    - 172.20.0.2
+    networks:
+      my-net-one:
+        ipv4_address: 172.20.0.3
+
+  host2:
+    build: ./hostmachine
+    image: hostmachine:latest
+    container_name: host2
+    command: tail -F anything
+    hostname: host_2
+    volumes:
+       - ./hostmachine/resolv2.conf:/etc/resolv.conf
+    dns:
+    - 173.20.0.2
+    networks:
+      my-net-two:
+        ipv4_address: 173.20.0.4
+
+  host3:
+    build: ./hostmachine
+    image: hostmachine:latest
+    container_name: host3
+    command: tail -F anything
+    hostname: host_3
+    volumes:
+      - ./hostmachine/resolv.conf:/etc/resolv.conf
+    dns:
+    - 172.20.0.2
+    networks:
+      my-net-one:
+        ipv4_address: 172.20.0.5
+
+networks:
+  my-net-one:
+    name: my-net-one
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/24
+          gateway: 172.20.0.254
+  my-net-two:
+    name: my-net-two
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 173.20.0.0/24
+          gateway: 173.20.0.254
